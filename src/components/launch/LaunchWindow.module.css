@@ -1,0 +1,23 @@
+/* Electron-specific: no Tailwind equivalent for -webkit-app-region */
+.electronDrag {
+	-webkit-app-region: drag;
+}
+
+.electronNoDrag {
+	-webkit-app-region: no-drag;
+}
+
+.hudViewportPadding {
+	padding: 4px;
+	box-sizing: border-box;
+}
+
+.hudRootTransparent {
+	background: transparent;
+	background-color: transparent;
+}
+
+.hudWrapperTransparent {
+	background: transparent;
+	background-color: transparent;
+}
