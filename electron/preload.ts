@@ -9,6 +9,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	hudOverlayClose: () => {
 		ipcRenderer.send("hud-overlay-close");
 	},
+	setHudHeight: (height: number) => {
+		ipcRenderer.send("set-hud-height", height);
+	},
+	setHudContentProtection: (protect: boolean) => {
+		ipcRenderer.send("set-hud-content-protection", protect);
+	},
 	getAssetBasePath: async () => {
 		// ask main process for the correct base path (production vs dev)
 		return await ipcRenderer.invoke("get-asset-base-path");
@@ -25,8 +31,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	startNewRecording: () => {
 		return ipcRenderer.invoke("start-new-recording");
 	},
-	openSourceSelector: () => {
-		return ipcRenderer.invoke("open-source-selector");
+	openSourceSelector: (defaultTab?: string) => {
+		return ipcRenderer.invoke("open-source-selector", defaultTab);
 	},
 	selectSource: (source: ProcessedDesktopSource) => {
 		return ipcRenderer.invoke("select-source", source);
@@ -149,6 +155,39 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	},
 	setLocale: (locale: string) => {
 		return ipcRenderer.invoke("set-locale", locale);
+	},
+	openDisplayOverlays: () => {
+		return ipcRenderer.invoke("open-display-overlays");
+	},
+	selectDisplayAndStart: (displayId: string) => {
+		return ipcRenderer.invoke("select-display-and-start", displayId);
+	},
+	closeDisplayOverlays: () => {
+		return ipcRenderer.invoke("close-display-overlays");
+	},
+	openAreaSelector: () => {
+		return ipcRenderer.invoke("open-area-selector");
+	},
+	closeAreaSelector: () => {
+		return ipcRenderer.invoke("close-area-selector");
+	},
+	confirmAreaSelection: (selection: { x: number; y: number; width: number; height: number }) => {
+		return ipcRenderer.invoke("confirm-area-selection", selection);
+	},
+	onAreaSelectionConfirmed: (
+		callback: (selection: { x: number; y: number; width: number; height: number }) => void,
+	) => {
+		const listener = (
+			_event: unknown,
+			selection: { x: number; y: number; width: number; height: number },
+		) => callback(selection);
+		ipcRenderer.on("area-selection-confirmed", listener);
+		return () => ipcRenderer.removeListener("area-selection-confirmed", listener);
+	},
+	onStartRecording: (callback: () => void) => {
+		const listener = () => callback();
+		ipcRenderer.on("start-recording", listener);
+		return () => ipcRenderer.removeListener("start-recording", listener);
 	},
 	setMicrophoneExpanded: (expanded: boolean) => {
 		ipcRenderer.send("hud:setMicrophoneExpanded", expanded);

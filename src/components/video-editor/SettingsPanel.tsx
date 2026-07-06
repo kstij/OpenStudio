@@ -338,7 +338,7 @@ export function SettingsPanel({
 	const colorPalette = [
 		"#FF0000",
 		"#FFD700",
-		"#5078EA",
+		"#5B63EA",
 		"#FFFFFF",
 		"#0000FF",
 		"#FF6B00",
@@ -346,9 +346,9 @@ export function SettingsPanel({
 		"#E91E63",
 		"#00BCD4",
 		"#FF5722",
-		"#5078EA",
+		"#5B63EA",
 		"#FFC107",
-		"#5078EA",
+		"#5B63EA",
 		"#000000",
 		"#607D8B",
 		"#795548",
@@ -367,12 +367,13 @@ export function SettingsPanel({
 		{ label: "L", value: 34 },
 	];
 
-	const screenLayoutPresets: Array<{ value: ScreenLayoutPreset; label: string; subtitle: string }> = [
-		{ value: "full-screen", label: "Full Screen", subtitle: "No padding" },
-		{ value: "comfortable", label: "Comfortable", subtitle: "40px padding" },
-		{ value: "padded", label: "Padded", subtitle: "Current style" },
-		{ value: "custom", label: "Custom", subtitle: "0-120px" },
-	];
+	const screenLayoutPresets: Array<{ value: ScreenLayoutPreset; label: string; subtitle: string }> =
+		[
+			{ value: "full-screen", label: "Full Screen", subtitle: "No padding" },
+			{ value: "comfortable", label: "Comfortable", subtitle: "40px padding" },
+			{ value: "padded", label: "Padded", subtitle: "Current style" },
+			{ value: "custom", label: "Custom", subtitle: "0-120px" },
+		];
 
 	const effectivePadding = resolveScreenPadding(screenLayoutPreset, padding);
 
@@ -579,14 +580,14 @@ export function SettingsPanel({
 	}
 
 	return (
-		<div className="flex-[2] min-w-0 bg-[#09090b] border border-white/5 rounded-2xl flex flex-col shadow-xl h-full overflow-hidden">
+		<div className="flex-[2] min-w-0 bg-[#16161a]/60 border border-white/[0.04] backdrop-blur-xl rounded-2xl flex flex-col shadow-xl h-full overflow-hidden">
 			<div className="flex-1 overflow-y-auto custom-scrollbar p-4 pb-0">
 				<div className="mb-4">
 					<div className="flex items-center justify-between mb-3">
 						<span className="text-sm font-medium text-slate-200">{t("zoom.level")}</span>
 						<div className="flex items-center gap-2">
 							{zoomEnabled && selectedZoomDepth && (
-								<span className="text-[10px] uppercase tracking-wider font-medium text-[#5078EA] bg-[#5078EA]/10 px-2 py-0.5 rounded-full">
+								<span className="text-[10px] uppercase tracking-wider font-medium text-white bg-white/10 px-2 py-0.5 rounded-full">
 									{ZOOM_DEPTH_OPTIONS.find((o) => o.depth === selectedZoomDepth)?.label}
 								</span>
 							)}
@@ -607,7 +608,7 @@ export function SettingsPanel({
 										"duration-200 ease-out",
 										zoomEnabled ? "opacity-100 cursor-pointer" : "opacity-40 cursor-not-allowed",
 										isActive
-											? "border-[#5078EA] bg-[#5078EA] text-white shadow-[#5078EA]/20"
+											? "border-white bg-white text-zinc-950 font-bold shadow-white/10"
 											: "border-white/5 bg-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10 hover:text-slate-200",
 									)}
 								>
@@ -636,7 +637,7 @@ export function SettingsPanel({
 												"h-auto w-full rounded-lg border px-2 py-2 text-center shadow-sm transition-all",
 												"duration-200 ease-out cursor-pointer",
 												isActive
-													? "border-[#5078EA] bg-[#5078EA] text-white shadow-[#5078EA]/20"
+													? "border-white bg-white text-zinc-950 font-bold shadow-white/10"
 													: "border-white/5 bg-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10 hover:text-slate-200",
 											)}
 										>
@@ -767,7 +768,7 @@ export function SettingsPanel({
 						>
 							<AccordionTrigger className="py-2.5 hover:no-underline">
 								<div className="flex items-center gap-2">
-									<Sparkles className="w-4 h-4 text-[#5078EA]" />
+									<Sparkles className="w-4 h-4 text-white" />
 									<span className="text-xs font-medium">{t("layout.title")}</span>
 								</div>
 							</AccordionTrigger>
@@ -821,7 +822,7 @@ export function SettingsPanel({
 													className={cn(
 														"h-10 rounded-lg border flex flex-col items-center justify-center gap-0.5 transition-all",
 														webcamMaskShape === shape.value
-															? "bg-[#5078EA] border-[#5078EA] text-white"
+															? "bg-white border-white text-zinc-950 font-semibold"
 															: "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-400",
 													)}
 												>
@@ -912,7 +913,7 @@ export function SettingsPanel({
 													className={cn(
 														"h-7 rounded-md border text-[10px] font-semibold",
 														Math.abs(webcamSizePreset - preset.value) <= 1
-															? "border-[#5078EA] bg-[#5078EA] text-white"
+															? "border-white bg-white text-zinc-950 font-semibold"
 															: "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10",
 													)}
 												>
@@ -929,7 +930,7 @@ export function SettingsPanel({
 											<Switch
 												checked={webcamMirrored}
 												onCheckedChange={onWebcamMirroredChange}
-												className="data-[state=checked]:bg-[#5078EA] scale-90"
+												className="data-[state=checked]:bg-white scale-90"
 											/>
 										</div>
 									</div>
@@ -960,7 +961,7 @@ export function SettingsPanel({
 					<AccordionItem value="effects" className="border-white/5 rounded-xl bg-white/[0.02] px-3">
 						<AccordionTrigger className="py-2.5 hover:no-underline">
 							<div className="flex items-center gap-2">
-								<Sparkles className="w-4 h-4 text-[#5078EA]" />
+								<Sparkles className="w-4 h-4 text-white" />
 								<span className="text-xs font-medium">{t("effects.title")}</span>
 							</div>
 						</AccordionTrigger>
@@ -978,11 +979,13 @@ export function SettingsPanel({
 												className={cn(
 													"rounded-lg border px-2 py-2 text-left transition-colors",
 													active
-														? "border-[#5078EA] bg-[#5078EA]/15"
+														? "border-white bg-white/10 text-white"
 														: "border-white/10 bg-white/5 hover:bg-white/10",
 												)}
 											>
-												<div className="text-[10px] font-semibold text-slate-100">{preset.label}</div>
+												<div className="text-[10px] font-semibold text-slate-100">
+													{preset.label}
+												</div>
 												<div className="text-[9px] text-slate-400">{preset.subtitle}</div>
 											</button>
 										);
@@ -998,7 +1001,7 @@ export function SettingsPanel({
 									<Switch
 										checked={showBlur}
 										onCheckedChange={onBlurChange}
-										className="data-[state=checked]:bg-[#5078EA] scale-90"
+										className="data-[state=checked]:bg-white scale-90"
 									/>
 								</div>
 							</div>
@@ -1020,7 +1023,7 @@ export function SettingsPanel({
 										min={0}
 										max={1}
 										step={0.01}
-										className="w-full [&_[role=slider]]:bg-[#5078EA] [&_[role=slider]]:border-[#5078EA] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+										className="w-full [&_[role=slider]]:bg-white [&_[role=slider]]:border-white [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 									/>
 								</div>
 								<div className="p-2 rounded-lg bg-white/5 border border-white/5">
@@ -1039,14 +1042,12 @@ export function SettingsPanel({
 										min={0}
 										max={1}
 										step={0.01}
-										className="w-full [&_[role=slider]]:bg-[#5078EA] [&_[role=slider]]:border-[#5078EA] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+										className="w-full [&_[role=slider]]:bg-white [&_[role=slider]]:border-white [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 									/>
 								</div>
 								<div className="p-2 rounded-lg bg-white/5 border border-white/5">
 									<div className="flex items-center justify-between mb-1">
-										<div className="text-[10px] font-medium text-slate-300">
-											Corner Radius
-										</div>
+										<div className="text-[10px] font-medium text-slate-300">Corner Radius</div>
 										<span className="text-[10px] text-slate-500 font-mono">{borderRadius}px</span>
 									</div>
 									<Slider
@@ -1056,16 +1057,14 @@ export function SettingsPanel({
 										min={0}
 										max={40}
 										step={1}
-										className="w-full [&_[role=slider]]:bg-[#5078EA] [&_[role=slider]]:border-[#5078EA] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+										className="w-full [&_[role=slider]]:bg-white [&_[role=slider]]:border-white [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 									/>
 								</div>
 								<div
 									className={`p-2 rounded-lg bg-white/5 border border-white/5 ${webcamLayoutPreset === "vertical-stack" || screenLayoutPreset !== "custom" ? "opacity-40 pointer-events-none" : ""}`}
 								>
 									<div className="flex items-center justify-between mb-1">
-										<div className="text-[10px] font-medium text-slate-300">
-											Custom Padding
-										</div>
+										<div className="text-[10px] font-medium text-slate-300">Custom Padding</div>
 										<span className="text-[10px] text-slate-500 font-mono">
 											{webcamLayoutPreset === "vertical-stack" ? "—" : `${effectivePadding}px`}
 										</span>
@@ -1083,8 +1082,10 @@ export function SettingsPanel({
 										min={0}
 										max={120}
 										step={1}
-										disabled={webcamLayoutPreset === "vertical-stack" || screenLayoutPreset !== "custom"}
-										className="w-full [&_[role=slider]]:bg-[#5078EA] [&_[role=slider]]:border-[#5078EA] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+										disabled={
+											webcamLayoutPreset === "vertical-stack" || screenLayoutPreset !== "custom"
+										}
+										className="w-full [&_[role=slider]]:bg-white [&_[role=slider]]:border-white [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 									/>
 								</div>
 							</div>
@@ -1106,7 +1107,7 @@ export function SettingsPanel({
 					>
 						<AccordionTrigger className="py-2.5 hover:no-underline">
 							<div className="flex items-center gap-2">
-								<Palette className="w-4 h-4 text-[#5078EA]" />
+								<Palette className="w-4 h-4 text-white" />
 								<span className="text-xs font-medium">{t("background.title")}</span>
 							</div>
 						</AccordionTrigger>
@@ -1115,19 +1116,19 @@ export function SettingsPanel({
 								<TabsList className="mb-2 bg-white/5 border border-white/5 p-0.5 w-full grid grid-cols-3 h-7 rounded-lg">
 									<TabsTrigger
 										value="image"
-										className="data-[state=active]:bg-[#5078EA] data-[state=active]:text-white text-slate-400 text-[10px] py-1 rounded-md transition-all"
+										className="data-[state=active]:bg-white data-[state=active]:text-zinc-950 text-slate-400 text-[10px] py-1 rounded-md transition-all font-semibold"
 									>
 										{t("background.image")}
 									</TabsTrigger>
 									<TabsTrigger
 										value="color"
-										className="data-[state=active]:bg-[#5078EA] data-[state=active]:text-white text-slate-400 text-[10px] py-1 rounded-md transition-all"
+										className="data-[state=active]:bg-white data-[state=active]:text-zinc-950 text-slate-400 text-[10px] py-1 rounded-md transition-all font-semibold"
 									>
 										{t("background.color")}
 									</TabsTrigger>
 									<TabsTrigger
 										value="gradient"
-										className="data-[state=active]:bg-[#5078EA] data-[state=active]:text-white text-slate-400 text-[10px] py-1 rounded-md transition-all"
+										className="data-[state=active]:bg-white data-[state=active]:text-zinc-950 text-slate-400 text-[10px] py-1 rounded-md transition-all font-semibold"
 									>
 										{t("background.gradient")}
 									</TabsTrigger>
@@ -1145,7 +1146,7 @@ export function SettingsPanel({
 										<Button
 											onClick={() => fileInputRef.current?.click()}
 											variant="outline"
-											className="w-full gap-2 bg-white/5 text-slate-200 border-white/10 hover:bg-[#5078EA] hover:text-white hover:border-[#5078EA] transition-all h-7 text-[10px]"
+											className="w-full gap-2 bg-white/5 text-slate-200 border-white/10 hover:bg-white/10 hover:border-white/20 transition-all h-7 text-[10px]"
 										>
 											<Upload className="w-3 h-3" />
 											{t("background.uploadCustom")}
@@ -1160,8 +1161,8 @@ export function SettingsPanel({
 														className={cn(
 															"aspect-square w-9 h-9 rounded-md border-2 overflow-hidden cursor-pointer transition-all duration-200 relative group shadow-sm",
 															isSelected
-																? "border-[#5078EA] ring-1 ring-[#5078EA]/30"
-																: "border-white/10 hover:border-[#5078EA]/40 opacity-80 hover:opacity-100 bg-white/5",
+																? "border-white ring-1 ring-white/30"
+																: "border-white/10 hover:border-white/40 opacity-80 hover:opacity-100 bg-white/5",
 														)}
 														style={{
 															backgroundImage: `url(${imageUrl})`,
@@ -1204,8 +1205,8 @@ export function SettingsPanel({
 														className={cn(
 															"aspect-square w-9 h-9 rounded-md border-2 overflow-hidden cursor-pointer transition-all duration-200 shadow-sm",
 															isSelected
-																? "border-[#5078EA] ring-1 ring-[#5078EA]/30"
-																: "border-white/10 hover:border-[#5078EA]/40 opacity-80 hover:opacity-100 bg-white/5",
+																? "border-white ring-1 ring-white/30"
+																: "border-white/10 hover:border-white/40 opacity-80 hover:opacity-100 bg-white/5",
 														)}
 														style={{
 															backgroundImage: `url(${path})`,
@@ -1245,8 +1246,8 @@ export function SettingsPanel({
 													className={cn(
 														"aspect-square w-9 h-9 rounded-md border-2 overflow-hidden cursor-pointer transition-all duration-200 shadow-sm",
 														gradient === g
-															? "border-[#5078EA] ring-1 ring-[#5078EA]/30"
-															: "border-white/10 hover:border-[#5078EA]/40 opacity-80 hover:opacity-100 bg-white/5",
+															? "border-white ring-1 ring-white/30"
+															: "border-white/10 hover:border-white/40 opacity-80 hover:opacity-100 bg-white/5",
 													)}
 													style={{ background: g }}
 													aria-label={t("background.gradientLabel", {
@@ -1268,139 +1269,137 @@ export function SettingsPanel({
 				</Accordion>
 			</div>
 
-			{
-				showCropModal && cropRegion && onCropChange && (
-					<>
-						<div
-							className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 animate-in fade-in duration-200"
-							onClick={handleCropCancel}
+			{showCropModal && cropRegion && onCropChange && (
+				<>
+					<div
+						className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 animate-in fade-in duration-200"
+						onClick={handleCropCancel}
+					/>
+					<div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] bg-[#09090b] rounded-2xl shadow-2xl border border-white/10 p-8 w-[90vw] max-w-5xl max-h-[90vh] overflow-auto animate-in zoom-in-95 duration-200">
+						<div className="flex items-center justify-between mb-6">
+							<div>
+								<span className="text-xl font-bold text-slate-200">{t("crop.cropVideo")}</span>
+								<p className="text-sm text-slate-400 mt-2">{t("crop.dragInstruction")}</p>
+							</div>
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={handleCropCancel}
+								className="hover:bg-white/10 text-slate-400 hover:text-white"
+							>
+								<X className="w-5 h-5" />
+							</Button>
+						</div>
+						<CropControl
+							videoElement={videoElement || null}
+							cropRegion={cropRegion}
+							onCropChange={onCropChange}
+							aspectRatio={aspectRatio}
 						/>
-						<div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] bg-[#09090b] rounded-2xl shadow-2xl border border-white/10 p-8 w-[90vw] max-w-5xl max-h-[90vh] overflow-auto animate-in zoom-in-95 duration-200">
-							<div className="flex items-center justify-between mb-6">
-								<div>
-									<span className="text-xl font-bold text-slate-200">{t("crop.cropVideo")}</span>
-									<p className="text-sm text-slate-400 mt-2">{t("crop.dragInstruction")}</p>
+						<div className="mt-6 space-y-4">
+							<div className="flex flex-wrap items-end gap-3">
+								{[
+									{ label: "X", field: "x" as const, max: videoWidth },
+									{ label: "Y", field: "y" as const, max: videoHeight },
+									{ label: "W", field: "width" as const, max: videoWidth },
+									{ label: "H", field: "height" as const, max: videoHeight },
+								].map(({ label, field, max }) => (
+									<div key={field} className="flex flex-col gap-1">
+										<label className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+											{label}
+										</label>
+										<input
+											type="number"
+											min={0}
+											max={max}
+											value={getCropPixelValue(field)}
+											onChange={(e) => handleCropNumericChange(field, Number(e.target.value))}
+											className="w-[90px] h-8 rounded-md border border-white/10 bg-white/5 px-2 text-xs text-slate-200 outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+										/>
+									</div>
+								))}
+
+								<div className="flex flex-col gap-1">
+									<label className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+										{t("crop.ratio")}
+									</label>
+									<div className="flex items-center gap-1.5">
+										<select
+											value={cropAspectRatio}
+											onChange={(e) => applyCropAspectPreset(e.target.value)}
+											className="h-8 rounded-md border border-white/10 bg-[#1a1a1f] px-2 text-xs text-slate-200 outline-none focus:border-white/50 cursor-pointer"
+										>
+											<option value="" className="bg-[#1a1a1f] text-slate-200">
+												{t("crop.free")}
+											</option>
+											<option value="16:9" className="bg-[#1a1a1f] text-slate-200">
+												16:9
+											</option>
+											<option value="9:16" className="bg-[#1a1a1f] text-slate-200">
+												9:16
+											</option>
+											<option value="4:3" className="bg-[#1a1a1f] text-slate-200">
+												4:3
+											</option>
+											<option value="3:4" className="bg-[#1a1a1f] text-slate-200">
+												3:4
+											</option>
+											<option value="1:1" className="bg-[#1a1a1f] text-slate-200">
+												1:1
+											</option>
+											<option value="21:9" className="bg-[#1a1a1f] text-slate-200">
+												21:9
+											</option>
+										</select>
+										<button
+											type="button"
+											onClick={() => setCropAspectLocked((prev) => !prev)}
+											className={cn(
+												"h-8 w-8 flex items-center justify-center rounded-md border transition-all",
+												cropAspectLocked
+													? "border-white/50 bg-white/10 text-white"
+													: "border-white/10 bg-white/5 text-slate-400 hover:text-slate-200",
+											)}
+											title={
+												cropAspectLocked ? t("crop.unlockAspectRatio") : t("crop.lockAspectRatio")
+											}
+										>
+											{cropAspectLocked ? (
+												<Lock className="w-3.5 h-3.5" />
+											) : (
+												<Unlock className="w-3.5 h-3.5" />
+											)}
+										</button>
+									</div>
 								</div>
+
+								<p className="text-[10px] text-slate-500 self-center ml-2">
+									{videoWidth} × {videoHeight}px
+								</p>
+							</div>
+
+							<div className="flex justify-end">
 								<Button
-									variant="ghost"
-									size="icon"
-									onClick={handleCropCancel}
-									className="hover:bg-white/10 text-slate-400 hover:text-white"
+									onClick={() => setShowCropModal(false)}
+									size="lg"
+									className="bg-white hover:bg-zinc-200 text-black font-semibold border-none"
 								>
-									<X className="w-5 h-5" />
+									{t("crop.done")}
 								</Button>
 							</div>
-							<CropControl
-								videoElement={videoElement || null}
-								cropRegion={cropRegion}
-								onCropChange={onCropChange}
-								aspectRatio={aspectRatio}
-							/>
-							<div className="mt-6 space-y-4">
-								<div className="flex flex-wrap items-end gap-3">
-									{[
-										{ label: "X", field: "x" as const, max: videoWidth },
-										{ label: "Y", field: "y" as const, max: videoHeight },
-										{ label: "W", field: "width" as const, max: videoWidth },
-										{ label: "H", field: "height" as const, max: videoHeight },
-									].map(({ label, field, max }) => (
-										<div key={field} className="flex flex-col gap-1">
-											<label className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
-												{label}
-											</label>
-											<input
-												type="number"
-												min={0}
-												max={max}
-												value={getCropPixelValue(field)}
-												onChange={(e) => handleCropNumericChange(field, Number(e.target.value))}
-												className="w-[90px] h-8 rounded-md border border-white/10 bg-white/5 px-2 text-xs text-slate-200 outline-none focus:border-[#5078EA]/50 focus:ring-1 focus:ring-[#5078EA]/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-											/>
-										</div>
-									))}
-
-									<div className="flex flex-col gap-1">
-										<label className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
-											{t("crop.ratio")}
-										</label>
-										<div className="flex items-center gap-1.5">
-											<select
-												value={cropAspectRatio}
-												onChange={(e) => applyCropAspectPreset(e.target.value)}
-												className="h-8 rounded-md border border-white/10 bg-[#1a1a1f] px-2 text-xs text-slate-200 outline-none focus:border-[#5078EA]/50 cursor-pointer"
-											>
-												<option value="" className="bg-[#1a1a1f] text-slate-200">
-													{t("crop.free")}
-												</option>
-												<option value="16:9" className="bg-[#1a1a1f] text-slate-200">
-													16:9
-												</option>
-												<option value="9:16" className="bg-[#1a1a1f] text-slate-200">
-													9:16
-												</option>
-												<option value="4:3" className="bg-[#1a1a1f] text-slate-200">
-													4:3
-												</option>
-												<option value="3:4" className="bg-[#1a1a1f] text-slate-200">
-													3:4
-												</option>
-												<option value="1:1" className="bg-[#1a1a1f] text-slate-200">
-													1:1
-												</option>
-												<option value="21:9" className="bg-[#1a1a1f] text-slate-200">
-													21:9
-												</option>
-											</select>
-											<button
-												type="button"
-												onClick={() => setCropAspectLocked((prev) => !prev)}
-												className={cn(
-													"h-8 w-8 flex items-center justify-center rounded-md border transition-all",
-													cropAspectLocked
-														? "border-[#5078EA]/50 bg-[#5078EA]/10 text-[#5078EA]"
-														: "border-white/10 bg-white/5 text-slate-400 hover:text-slate-200",
-												)}
-												title={
-													cropAspectLocked ? t("crop.unlockAspectRatio") : t("crop.lockAspectRatio")
-												}
-											>
-												{cropAspectLocked ? (
-													<Lock className="w-3.5 h-3.5" />
-												) : (
-													<Unlock className="w-3.5 h-3.5" />
-												)}
-											</button>
-										</div>
-									</div>
-
-									<p className="text-[10px] text-slate-500 self-center ml-2">
-										{videoWidth} × {videoHeight}px
-									</p>
-								</div>
-
-								<div className="flex justify-end">
-									<Button
-										onClick={() => setShowCropModal(false)}
-										size="lg"
-										className="bg-[#5078EA] hover:bg-[#5078EA]/90 text-white"
-									>
-										{t("crop.done")}
-									</Button>
-								</div>
-							</div>
 						</div>
-					</>
-				)
-			}
+					</div>
+				</>
+			)}
 
-			<div className="flex-shrink-0 p-4 pt-3 border-t border-white/5 bg-[#09090b]">
+			<div className="flex-shrink-0 p-4 pt-3 border-t border-white/[0.04] bg-transparent">
 				<div className="flex items-center gap-2 mb-3">
 					<button
 						onClick={() => onExportFormatChange?.("mp4")}
 						className={cn(
 							"flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border transition-all text-xs font-medium",
 							exportFormat === "mp4"
-								? "bg-[#5078EA]/10 border-[#5078EA]/50 text-white"
+								? "bg-white/10 border-white/40 text-white"
 								: "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-slate-200",
 						)}
 					>
@@ -1413,7 +1412,7 @@ export function SettingsPanel({
 						className={cn(
 							"flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border transition-all text-xs font-medium",
 							exportFormat === "gif"
-								? "bg-[#5078EA]/10 border-[#5078EA]/50 text-white"
+								? "bg-white/10 border-white/40 text-white"
 								: "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-slate-200",
 						)}
 					>
@@ -1506,7 +1505,7 @@ export function SettingsPanel({
 								<Switch
 									checked={gifLoop}
 									onCheckedChange={onGifLoopChange}
-									className="data-[state=checked]:bg-[#5078EA] scale-75"
+									className="data-[state=checked]:bg-white scale-75"
 								/>
 							</div>
 						</div>
@@ -1529,16 +1528,14 @@ export function SettingsPanel({
 					type="button"
 					size="lg"
 					onClick={onExport}
-					className="w-full py-5 text-sm font-semibold flex items-center justify-center gap-2 bg-[#5078EA] text-white rounded-xl shadow-lg shadow-[#5078EA]/20 hover:bg-[#5078EA]/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+					className="w-full py-5 text-sm font-semibold flex items-center justify-center gap-2 bg-white hover:bg-zinc-200 text-black border-none rounded-xl shadow-lg shadow-white/5 transition-all duration-200"
 				>
 					<Download className="w-4 h-4" />
 					{exportFormat === "gif" ? t("export.gifButton") : t("export.videoButton")}
 				</Button>
 
-				<div className="mt-3 text-center text-[10px] text-slate-500">
-					OpenStudio
-				</div>
+				<div className="mt-3 text-center text-[10px] text-slate-500">OpenStudio</div>
 			</div>
-		</div >
+		</div>
 	);
 }

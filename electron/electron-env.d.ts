@@ -28,7 +28,7 @@ interface Window {
 		switchToEditor: () => Promise<void>;
 		switchToHud: () => Promise<void>;
 		startNewRecording: () => Promise<{ success: boolean; error?: string }>;
-		openSourceSelector: () => Promise<void>;
+		openSourceSelector: (defaultTab?: string) => Promise<void>;
 		selectSource: (source: ProcessedDesktopSource) => Promise<ProcessedDesktopSource | null>;
 		getSelectedSource: () => Promise<ProcessedDesktopSource | null>;
 		requestCameraAccess: () => Promise<{
@@ -142,10 +142,27 @@ interface Window {
 		saveShortcuts: (shortcuts: unknown) => Promise<{ success: boolean; error?: string }>;
 		hudOverlayHide: () => void;
 		hudOverlayClose: () => void;
+		setHudHeight: (height: number) => void;
+		setHudContentProtection: (protect: boolean) => void;
 		setMicrophoneExpanded: (expanded: boolean) => void;
 		setHasUnsavedChanges: (hasChanges: boolean) => void;
 		onRequestSaveBeforeClose: (callback: () => Promise<boolean> | boolean) => () => void;
 		setLocale: (locale: string) => Promise<void>;
+		openDisplayOverlays: () => Promise<void>;
+		selectDisplayAndStart: (displayId: string) => Promise<void>;
+		closeDisplayOverlays: () => Promise<void>;
+		openAreaSelector: () => Promise<{ success: boolean }>;
+		closeAreaSelector: () => Promise<{ success: boolean }>;
+		confirmAreaSelection: (selection: {
+			x: number;
+			y: number;
+			width: number;
+			height: number;
+		}) => Promise<{ success: boolean }>;
+		onAreaSelectionConfirmed: (
+			callback: (selection: { x: number; y: number; width: number; height: number }) => void,
+		) => () => void;
+		onStartRecording: (callback: () => void) => () => void;
 	};
 }
 

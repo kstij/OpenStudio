@@ -17,23 +17,52 @@ ipcMain.on("hud-overlay-hide", () => {
 	}
 });
 
+ipcMain.on("set-hud-height", (_event, height: number) => {
+	if (hudOverlayWindow && !hudOverlayWindow.isDestroyed()) {
+		const primaryDisplay = screen.getPrimaryDisplay();
+		const { workArea } = primaryDisplay;
+		const [currentWidth] = hudOverlayWindow.getSize();
+		const targetHeight = Math.round(height);
+
+		// Shift y-coordinate upwards by the height difference so the window grows upwards
+		const targetY = Math.floor(workArea.y + workArea.height - 100 - (targetHeight - 95));
+		const [currentX] = hudOverlayWindow.getPosition();
+
+		hudOverlayWindow.setBounds(
+			{
+				x: currentX,
+				y: targetY,
+				width: currentWidth,
+				height: targetHeight,
+			},
+			false,
+		);
+	}
+});
+
+ipcMain.on("set-hud-content-protection", (_event, protect: boolean) => {
+	if (hudOverlayWindow && !hudOverlayWindow.isDestroyed()) {
+		hudOverlayWindow.setContentProtection(protect);
+	}
+});
+
 export function createHudOverlayWindow(): BrowserWindow {
 	const primaryDisplay = screen.getPrimaryDisplay();
 	const { workArea } = primaryDisplay;
 
-	const windowWidth = 1000;
-	const windowHeight = 160;
+	const windowWidth = 860;
+	const windowHeight = 95;
 
 	const x = Math.floor(workArea.x + (workArea.width - windowWidth) / 2);
-	const y = Math.floor(workArea.y + workArea.height - windowHeight - 5);
+	const y = Math.floor(workArea.y + workArea.height - 100);
 
 	const win = new BrowserWindow({
 		width: windowWidth,
 		height: windowHeight,
-		minWidth: 1000,
-		maxWidth: 1000,
-		minHeight: 160,
-		maxHeight: 160,
+		minWidth: 860,
+		maxWidth: 860,
+		minHeight: 95,
+		maxHeight: 420,
 		x: x,
 		y: y,
 		frame: false,
@@ -74,8 +103,8 @@ export function createHudOverlayWindow(): BrowserWindow {
 		});
 	}
 
-	// Keep HUD monitor-only and out of desktop captures when possible.
-	win.setContentProtection(true);
+	// Visible in screenshots by default; hidden from screen capture only during recording.
+	win.setContentProtection(false);
 
 	return win;
 }
@@ -126,7 +155,7 @@ export function createEditorWindow(): BrowserWindow {
 	return win;
 }
 
-export function createSourceSelectorWindow(): BrowserWindow {
+export function createSourceSelectorWindow(defaultTab?: string): BrowserWindow {
 	const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
 	const win = new BrowserWindow({
@@ -149,10 +178,13 @@ export function createSourceSelectorWindow(): BrowserWindow {
 	});
 
 	if (VITE_DEV_SERVER_URL) {
-		win.loadURL(VITE_DEV_SERVER_URL + "?windowType=source-selector");
+		const url =
+			VITE_DEV_SERVER_URL +
+			`?windowType=source-selector${defaultTab ? `&defaultTab=${defaultTab}` : ""}`;
+		win.loadURL(url);
 	} else {
 		win.loadFile(path.join(RENDERER_DIST, "index.html"), {
-			query: { windowType: "source-selector" },
+			query: { windowType: "source-selector", ...(defaultTab && { defaultTab }) },
 		});
 	}
 
@@ -198,3 +230,143 @@ export function createWebcamPreviewWindow(): BrowserWindow {
 
 	return win;
 }
+
+let displayOverlayWindows: BrowserWindow[] = [];
+
+export function createDisplayOverlayWindows(displayNames: Record<string, string>): void {
+	closeDisplayOverlayWindows();
+
+	const displays = screen.getAllDisplays();
+	for (const display of displays) {
+		const displayName = displayNames[display.id.toString()] || `Display ${display.id}`;
+		const win = new BrowserWindow({
+			x: display.bounds.x,
+			y: display.bounds.y,
+			width: display.bounds.width,
+			height: display.bounds.height,
+			frame: false,
+			transparent: true,
+			resizable: false,
+			alwaysOnTop: true,
+			skipTaskbar: true,
+			hasShadow: false,
+			enableLargerThanScreen: true,
+			webPreferences: {
+				preload: path.join(__dirname, "preload.mjs"),
+				nodeIntegration: false,
+				contextIsolation: true,
+			},
+		});
+
+		win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+
+		const queryParams = new URLSearchParams({
+			windowType: "display-overlay",
+			displayId: display.id.toString(),
+			label: displayName,
+			width: display.bounds.width.toString(),
+			height: display.bounds.height.toString(),
+		});
+
+		if (VITE_DEV_SERVER_URL) {
+			win.loadURL(`${VITE_DEV_SERVER_URL}?${queryParams.toString()}`);
+		} else {
+			win.loadFile(path.join(RENDERER_DIST, "index.html"), {
+				query: Object.fromEntries(queryParams.entries()),
+			});
+		}
+
+		displayOverlayWindows.push(win);
+	}
+}
+
+export function closeDisplayOverlayWindows(): void {
+	for (const win of displayOverlayWindows) {
+		if (win && !win.isDestroyed()) {
+			win.close();
+		}
+	}
+	displayOverlayWindows = [];
+}
+
+export function getDisplayOverlayWindows(): BrowserWindow[] {
+	return displayOverlayWindows;
+}
+
+// ─── Area Selector ─────────────────────────────────────────────────────────
+
+let areaSelectorWindow: BrowserWindow | null = null;
+
+export interface AreaSelection {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}
+
+export function createAreaSelectorWindow(): BrowserWindow {
+	// Close any existing one
+	if (areaSelectorWindow && !areaSelectorWindow.isDestroyed()) {
+		areaSelectorWindow.close();
+	}
+
+	const { bounds } = screen.getPrimaryDisplay();
+
+	const win = new BrowserWindow({
+		x: bounds.x,
+		y: bounds.y,
+		width: bounds.width,
+		height: bounds.height,
+		frame: false,
+		transparent: true,
+		backgroundColor: "#00000000",
+		resizable: false,
+		alwaysOnTop: true,
+		skipTaskbar: true,
+		hasShadow: false,
+		enableLargerThanScreen: true,
+		webPreferences: {
+			preload: path.join(__dirname, "preload.mjs"),
+			nodeIntegration: false,
+			contextIsolation: true,
+		},
+	});
+
+	win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+
+	if (VITE_DEV_SERVER_URL) {
+		win.loadURL(`${VITE_DEV_SERVER_URL}?windowType=area-selector`);
+	} else {
+		win.loadFile(path.join(RENDERER_DIST, "index.html"), {
+			query: { windowType: "area-selector" },
+		});
+	}
+
+	win.on("closed", () => {
+		if (areaSelectorWindow === win) areaSelectorWindow = null;
+	});
+
+	areaSelectorWindow = win;
+	return win;
+}
+
+export function closeAreaSelectorWindow(): void {
+	if (areaSelectorWindow && !areaSelectorWindow.isDestroyed()) {
+		areaSelectorWindow.close();
+	}
+	areaSelectorWindow = null;
+}
+
+export function getAreaSelectorWindow(): BrowserWindow | null {
+	return areaSelectorWindow;
+}
+
+ipcMain.handle("open-area-selector", () => {
+	createAreaSelectorWindow();
+	return { success: true };
+});
+
+ipcMain.handle("close-area-selector", () => {
+	closeAreaSelectorWindow();
+	return { success: true };
+});

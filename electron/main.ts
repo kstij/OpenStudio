@@ -221,29 +221,29 @@ function updateTrayMenu(recording: boolean = false) {
 	const trayToolTip = recording ? `Recording: ${selectedSourceName}` : "OpenStudio";
 	const menuTemplate = recording
 		? [
-			{
-				label: mainT("common", "actions.stopRecording") || "Stop Recording",
-				click: () => {
-					if (mainWindow && !mainWindow.isDestroyed()) {
-						mainWindow.webContents.send("stop-recording-from-tray");
-					}
+				{
+					label: mainT("common", "actions.stopRecording") || "Stop Recording",
+					click: () => {
+						if (mainWindow && !mainWindow.isDestroyed()) {
+							mainWindow.webContents.send("stop-recording-from-tray");
+						}
+					},
 				},
-			},
-		]
+			]
 		: [
-			{
-				label: mainT("common", "actions.open") || "Open",
-				click: () => {
-					showMainWindow();
+				{
+					label: mainT("common", "actions.open") || "Open",
+					click: () => {
+						showMainWindow();
+					},
 				},
-			},
-			{
-				label: mainT("common", "actions.quit") || "Quit",
-				click: () => {
-					app.quit();
+				{
+					label: mainT("common", "actions.quit") || "Quit",
+					click: () => {
+						app.quit();
+					},
 				},
-			},
-		];
+			];
 	tray.setImage(trayIcon);
 	tray.setToolTip(trayToolTip);
 	tray.setContextMenu(Menu.buildFromTemplate(menuTemplate));
@@ -315,6 +315,17 @@ function createEditorWindowWrapper() {
 			forceCloseEditorWindow(windowToClose);
 		}
 		// choice === 2: Cancel — do nothing, window stays open
+	});
+
+	mainWindow.on("closed", () => {
+		if (!isForceClosing) {
+			mainWindow = null;
+			showMainWindow();
+			if (webcamPreviewWindow && !webcamPreviewWindow.isDestroyed()) {
+				webcamPreviewWindow.close();
+				webcamPreviewWindow = null;
+			}
+		}
 	});
 }
 

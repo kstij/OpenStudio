@@ -66,9 +66,9 @@ export function loadUserPreferences(): UserPreferences {
 	return {
 		padding:
 			typeof raw.padding === "number" &&
-				Number.isFinite(raw.padding) &&
-				raw.padding >= 0 &&
-				raw.padding <= 100
+			Number.isFinite(raw.padding) &&
+			raw.padding >= 0 &&
+			raw.padding <= 100
 				? raw.padding
 				: DEFAULT_PREFS.padding,
 		aspectRatio:
@@ -77,8 +77,8 @@ export function loadUserPreferences(): UserPreferences {
 				: DEFAULT_PREFS.aspectRatio,
 		exportQuality:
 			raw.exportQuality === "medium" ||
-				raw.exportQuality === "good" ||
-				raw.exportQuality === "source"
+			raw.exportQuality === "good" ||
+			raw.exportQuality === "source"
 				? (raw.exportQuality as ExportQuality)
 				: DEFAULT_PREFS.exportQuality,
 		exportFormat:
@@ -86,14 +86,12 @@ export function loadUserPreferences(): UserPreferences {
 				? (raw.exportFormat as ExportFormat)
 				: DEFAULT_PREFS.exportFormat,
 		webcamMirrored:
-			typeof raw.webcamMirrored === "boolean"
-				? raw.webcamMirrored
-				: DEFAULT_PREFS.webcamMirrored,
+			typeof raw.webcamMirrored === "boolean" ? raw.webcamMirrored : DEFAULT_PREFS.webcamMirrored,
 		webcamShape:
 			raw.webcamShape === "rectangle" ||
-				raw.webcamShape === "rounded" ||
-				raw.webcamShape === "circle" ||
-				raw.webcamShape === "square"
+			raw.webcamShape === "rounded" ||
+			raw.webcamShape === "circle" ||
+			raw.webcamShape === "square"
 				? raw.webcamShape
 				: DEFAULT_PREFS.webcamShape,
 		webcamBlur:

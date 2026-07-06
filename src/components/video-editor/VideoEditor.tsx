@@ -531,6 +531,7 @@ export default function VideoEditor() {
 			gifSizePreset,
 			videoPath,
 			t,
+			screenLayoutPreset,
 		],
 	);
 
@@ -741,10 +742,10 @@ export default function VideoEditor() {
 				zoomRegions: prev.zoomRegions.map((region) =>
 					region.id === id
 						? {
-							...region,
-							startMs: Math.round(span.start),
-							endMs: Math.round(span.end),
-						}
+								...region,
+								startMs: Math.round(span.start),
+								endMs: Math.round(span.end),
+							}
 						: region,
 				),
 			}));
@@ -758,10 +759,10 @@ export default function VideoEditor() {
 				trimRegions: prev.trimRegions.map((region) =>
 					region.id === id
 						? {
-							...region,
-							startMs: Math.round(span.start),
-							endMs: Math.round(span.end),
-						}
+								...region,
+								startMs: Math.round(span.start),
+								endMs: Math.round(span.end),
+							}
 						: region,
 				),
 			}));
@@ -788,10 +789,10 @@ export default function VideoEditor() {
 				zoomRegions: prev.zoomRegions.map((region) =>
 					region.id === selectedZoomId
 						? {
-							...region,
-							depth,
-							focus: clampFocusToDepth(region.focus, depth),
-						}
+								...region,
+								depth,
+								focus: clampFocusToDepth(region.focus, depth),
+							}
 						: region,
 				),
 			}));
@@ -870,10 +871,10 @@ export default function VideoEditor() {
 				speedRegions: prev.speedRegions.map((region) =>
 					region.id === id
 						? {
-							...region,
-							startMs: Math.round(span.start),
-							endMs: Math.round(span.end),
-						}
+								...region,
+								startMs: Math.round(span.start),
+								endMs: Math.round(span.end),
+							}
 						: region,
 				),
 			}));
@@ -936,10 +937,10 @@ export default function VideoEditor() {
 				annotationRegions: prev.annotationRegions.map((region) =>
 					region.id === id
 						? {
-							...region,
-							startMs: Math.round(span.start),
-							endMs: Math.round(span.end),
-						}
+								...region,
+								startMs: Math.round(span.start),
+								endMs: Math.round(span.end),
+							}
 						: region,
 				),
 			}));
@@ -1519,12 +1520,12 @@ export default function VideoEditor() {
 			gifConfig:
 				exportFormat === "gif"
 					? {
-						frameRate: gifFrameRate,
-						loop: gifLoop,
-						sizePreset: gifSizePreset,
-						width: gifDimensions.width,
-						height: gifDimensions.height,
-					}
+							frameRate: gifFrameRate,
+							loop: gifLoop,
+							sizePreset: gifSizePreset,
+							width: gifDimensions.width,
+							height: gifDimensions.height,
+						}
 					: undefined,
 		};
 
@@ -1583,7 +1584,7 @@ export default function VideoEditor() {
 	}
 
 	return (
-		<div className="flex flex-col h-screen bg-[#09090b] text-slate-200 overflow-hidden selection:bg-[#5078EA]/30">
+		<div className="flex flex-col h-screen bg-gradient-to-b from-[#16161a] via-[#0f0f12] to-[#09090b] text-slate-200 overflow-hidden selection:bg-white/20">
 			<Dialog open={showNewRecordingDialog} onOpenChange={setShowNewRecordingDialog}>
 				<DialogContent
 					className="sm:max-w-[425px]"
@@ -1604,7 +1605,7 @@ export default function VideoEditor() {
 						<button
 							type="button"
 							onClick={handleNewRecordingConfirm}
-							className="px-4 py-2 rounded-md bg-[#5078EA] text-white hover:bg-[#5078EA]/90 text-sm font-medium transition-colors"
+							className="px-4 py-2 rounded-md bg-white text-black hover:bg-zinc-200 text-sm font-semibold border-none transition-colors"
 						>
 							{t("newRecording.confirm")}
 						</button>
@@ -1613,7 +1614,7 @@ export default function VideoEditor() {
 			</Dialog>
 
 			<div
-				className="h-10 flex-shrink-0 bg-[#09090b]/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 z-50"
+				className="h-10 flex-shrink-0 bg-[#09090b]/40 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 z-50"
 				style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
 			>
 				<div
@@ -1674,8 +1675,8 @@ export default function VideoEditor() {
 								ref={playerContainerRef}
 								className={
 									isFullscreen
-										? "fixed inset-0 z-[99999] w-full h-full flex flex-col items-center justify-center bg-[#09090b]"
-										: "w-full h-full flex flex-col items-center justify-center bg-black/40 rounded-2xl border border-white/5 shadow-2xl overflow-hidden relative"
+										? "fixed inset-0 z-[99999] w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#16161a] via-[#0f0f12] to-[#09090b]"
+										: "w-full h-full flex flex-col items-center justify-center bg-zinc-950/20 rounded-2xl border border-white/[0.04] shadow-2xl overflow-hidden relative"
 								}
 							>
 								{/* Video preview */}
@@ -1686,10 +1687,10 @@ export default function VideoEditor() {
 											aspectRatio:
 												aspectRatio === "native"
 													? getNativeAspectRatioValue(
-														videoPlaybackRef.current?.video?.videoWidth || 1920,
-														videoPlaybackRef.current?.video?.videoHeight || 1080,
-														cropRegion,
-													)
+															videoPlaybackRef.current?.video?.videoWidth || 1920,
+															videoPlaybackRef.current?.video?.videoHeight || 1080,
+															cropRegion,
+														)
 													: getAspectRatioValue(aspectRatio),
 										}}
 									>
@@ -1761,7 +1762,7 @@ export default function VideoEditor() {
 
 						{/* Timeline section */}
 						<Panel defaultSize={30} maxSize={60} minSize={30}>
-							<div className="h-full bg-[#09090b] rounded-2xl border border-white/5 shadow-lg overflow-hidden flex flex-col">
+							<div className="h-full bg-[#16161a]/60 border border-white/[0.04] backdrop-blur-xl rounded-2xl shadow-lg overflow-hidden flex flex-col">
 								<TimelineEditor
 									videoDuration={duration}
 									currentTime={currentTime}
@@ -1883,10 +1884,10 @@ export default function VideoEditor() {
 							GIF_SIZE_PRESETS,
 							aspectRatio === "native"
 								? getNativeAspectRatioValue(
-									videoPlaybackRef.current?.video?.videoWidth || 1920,
-									videoPlaybackRef.current?.video?.videoHeight || 1080,
-									cropRegion,
-								)
+										videoPlaybackRef.current?.video?.videoWidth || 1920,
+										videoPlaybackRef.current?.video?.videoHeight || 1080,
+										cropRegion,
+									)
 								: getAspectRatioValue(aspectRatio),
 						)}
 						onExport={handleOpenExportDialog}

@@ -277,9 +277,9 @@ export class StreamingVideoDecoder {
 		});
 		const preferredDecoderConfig = shouldPreferSoftwareDecode
 			? {
-				...decoderConfig,
-				hardwareAcceleration: "prefer-software" as const,
-			}
+					...decoderConfig,
+					hardwareAcceleration: "prefer-software" as const,
+				}
 			: decoderConfig;
 
 		try {

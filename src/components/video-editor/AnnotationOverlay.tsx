@@ -150,14 +150,14 @@ export function AnnotationOverlay({
 			bounds="parent"
 			className={cn(
 				"cursor-move transition-all",
-				isSelected && "ring-2 ring-[#5078EA] ring-offset-2 ring-offset-transparent",
+				isSelected && "ring-2 ring-white ring-offset-2 ring-offset-transparent",
 			)}
 			style={{
 				zIndex: isSelectedBoost ? zIndex + 1000 : zIndex, // Boost selected annotation to ensure it's on top
 				pointerEvents: isSelected ? "auto" : "none",
-				border: isSelected ? "2px solid rgba(80, 120, 234, 0.8)" : "none",
-				backgroundColor: isSelected ? "rgba(80, 120, 234, 0.1)" : "transparent",
-				boxShadow: isSelected ? "0 0 0 1px rgba(80, 120, 234, 0.35)" : "none",
+				border: isSelected ? "2px solid rgba(255, 255, 255, 0.8)" : "none",
+				backgroundColor: isSelected ? "rgba(255, 255, 255, 0.05)" : "transparent",
+				boxShadow: isSelected ? "0 0 0 1px rgba(255, 255, 255, 0.2)" : "none",
 			}}
 			enableResizing={isSelected}
 			disableDragging={!isSelected}
@@ -166,7 +166,7 @@ export function AnnotationOverlay({
 					width: "12px",
 					height: "12px",
 					backgroundColor: isSelected ? "white" : "transparent",
-					border: isSelected ? "2px solid #5078EA" : "none",
+					border: isSelected ? "2px solid #FFFFFF" : "none",
 					borderRadius: "50%",
 					left: "-6px",
 					top: "-6px",
@@ -176,7 +176,7 @@ export function AnnotationOverlay({
 					width: "12px",
 					height: "12px",
 					backgroundColor: isSelected ? "white" : "transparent",
-					border: isSelected ? "2px solid #5078EA" : "none",
+					border: isSelected ? "2px solid #FFFFFF" : "none",
 					borderRadius: "50%",
 					right: "-6px",
 					top: "-6px",
@@ -186,7 +186,7 @@ export function AnnotationOverlay({
 					width: "12px",
 					height: "12px",
 					backgroundColor: isSelected ? "white" : "transparent",
-					border: isSelected ? "2px solid #5078EA" : "none",
+					border: isSelected ? "2px solid #FFFFFF" : "none",
 					borderRadius: "50%",
 					left: "-6px",
 					bottom: "-6px",
@@ -196,7 +196,7 @@ export function AnnotationOverlay({
 					width: "12px",
 					height: "12px",
 					backgroundColor: isSelected ? "white" : "transparent",
-					border: isSelected ? "2px solid #5078EA" : "none",
+					border: isSelected ? "2px solid #FFFFFF" : "none",
 					borderRadius: "50%",
 					right: "-6px",
 					bottom: "-6px",

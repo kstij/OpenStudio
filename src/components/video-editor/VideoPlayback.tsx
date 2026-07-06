@@ -878,9 +878,9 @@ const VideoPlayback = forwardRef<VideoPlaybackRef, VideoPlaybackProps>(
 				const viewportRatio =
 					bm.width > 0 && bm.height > 0
 						? {
-							widthRatio: ss.width / bm.width,
-							heightRatio: ss.height / bm.height,
-						}
+								widthRatio: ss.width / bm.width,
+								heightRatio: ss.height / bm.height,
+							}
 						: undefined;
 				const { region, strength, blendedScale, transition } = findDominantRegion(
 					zoomRegionsRef.current,
@@ -1207,10 +1207,10 @@ const VideoPlayback = forwardRef<VideoPlaybackRef, VideoPlaybackProps>(
 
 		const isImageUrl = Boolean(
 			resolvedWallpaper &&
-			(resolvedWallpaper.startsWith("file://") ||
-				resolvedWallpaper.startsWith("http") ||
-				resolvedWallpaper.startsWith("/") ||
-				resolvedWallpaper.startsWith("data:")),
+				(resolvedWallpaper.startsWith("file://") ||
+					resolvedWallpaper.startsWith("http") ||
+					resolvedWallpaper.startsWith("/") ||
+					resolvedWallpaper.startsWith("data:")),
 		);
 		const backgroundStyle = isImageUrl
 			? { backgroundImage: `url(${resolvedWallpaper || ""})` }
@@ -1225,10 +1225,10 @@ const VideoPlayback = forwardRef<VideoPlaybackRef, VideoPlaybackProps>(
 						aspectRatio,
 						aspectRatio === "native"
 							? getNativeAspectRatioValue(
-								lockedVideoDimensionsRef.current?.width || 1920,
-								lockedVideoDimensionsRef.current?.height || 1080,
-								cropRegion,
-							)
+									lockedVideoDimensionsRef.current?.width || 1920,
+									lockedVideoDimensionsRef.current?.height || 1080,
+									cropRegion,
+								)
 							: undefined,
 					),
 				}}
@@ -1280,10 +1280,7 @@ const VideoPlayback = forwardRef<VideoPlaybackRef, VideoPlaybackProps>(
 										clipPath: clipPath ?? undefined,
 										boxShadow: useClipPath ? "none" : webcamCssBoxShadow,
 										transform: webcamMirrored ? "scaleX(-1)" : "none",
-										filter:
-											webcamBackgroundBlur > 0
-												? `blur(${webcamBackgroundBlur}px)`
-												: "none",
+										filter: webcamBackgroundBlur > 0 ? `blur(${webcamBackgroundBlur}px)` : "none",
 										backgroundColor: "#000",
 									}}
 									onPointerDown={handleWebcamPointerDown}

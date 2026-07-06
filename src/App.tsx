@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import AreaSelectorWindow from "./components/launch/AreaSelectorWindow";
+import DisplayOverlay from "./components/launch/DisplayOverlay";
 import { LaunchWindow } from "./components/launch/LaunchWindow";
 import { SourceSelector } from "./components/launch/SourceSelector";
 import { WebcamPreviewWindow } from "./components/launch/WebcamPreviewWindow";
@@ -16,7 +18,13 @@ export default function App() {
 		const params = new URLSearchParams(window.location.search);
 		const type = params.get("windowType") || "";
 		setWindowType(type);
-		if (type === "hud-overlay" || type === "source-selector" || type === "webcam-preview") {
+		if (
+			type === "hud-overlay" ||
+			type === "source-selector" ||
+			type === "webcam-preview" ||
+			type === "display-overlay" ||
+			type === "area-selector"
+		) {
 			document.body.style.background = "transparent";
 			document.body.style.backgroundColor = "transparent";
 			document.documentElement.style.background = "transparent";
@@ -50,6 +58,10 @@ export default function App() {
 				return <SourceSelector />;
 			case "webcam-preview":
 				return <WebcamPreviewWindow />;
+			case "display-overlay":
+				return <DisplayOverlay />;
+			case "area-selector":
+				return <AreaSelectorWindow />;
 			case "editor":
 				return (
 					<ShortcutsProvider>

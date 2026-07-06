@@ -20,6 +20,11 @@ import {
 } from "../../src/lib/recordingSession";
 import { mainT } from "../i18n";
 import { RECORDINGS_DIR } from "../main";
+import {
+	closeAreaSelectorWindow,
+	closeDisplayOverlayWindows,
+	createDisplayOverlayWindows,
+} from "../windows";
 
 const PROJECT_FILE_EXTENSION = "openstudio";
 const SHORTCUTS_FILE = path.join(app.getPath("userData"), "shortcuts.json");
@@ -130,8 +135,8 @@ async function getApprovedProjectSession(
 		normalizeProjectMedia(rawProject.media) ??
 		(typeof rawProject.videoPath === "string"
 			? {
-				screenVideoPath: normalizeVideoSourcePath(rawProject.videoPath) ?? rawProject.videoPath,
-			}
+					screenVideoPath: normalizeVideoSourcePath(rawProject.videoPath) ?? rawProject.videoPath,
+				}
 			: null);
 
 	if (!media) {
@@ -257,9 +262,9 @@ async function loadRecordedSessionForVideoPath(
 			screenVideoPath: normalizeVideoSourcePath(session.screenVideoPath) ?? session.screenVideoPath,
 			...(session.webcamVideoPath
 				? {
-					webcamVideoPath:
-						normalizeVideoSourcePath(session.webcamVideoPath) ?? session.webcamVideoPath,
-				}
+						webcamVideoPath:
+							normalizeVideoSourcePath(session.webcamVideoPath) ?? session.webcamVideoPath,
+					}
 				: {}),
 		};
 
@@ -372,7 +377,7 @@ function sampleCursorPoint() {
 
 export function registerIpcHandlers(
 	createEditorWindow: () => void,
-	createSourceSelectorWindow: () => BrowserWindow,
+	createSourceSelectorWindow: (defaultTab?: string) => BrowserWindow,
 	getMainWindow: () => BrowserWindow | null,
 	getSourceSelectorWindow: () => BrowserWindow | null,
 	createWebcamPreviewWindow: () => BrowserWindow,
@@ -398,7 +403,8 @@ export function registerIpcHandlers(
 			return;
 		}
 
-		const previewWindow = existing && !existing.isDestroyed() ? existing : createWebcamPreviewWindow();
+		const previewWindow =
+			existing && !existing.isDestroyed() ? existing : createWebcamPreviewWindow();
 		if (!existing && previewWindow.webContents) {
 			previewWindow.webContents.on("render-process-gone", (_event, details) => {
 				console.error("[webcam-preview] render process gone:", details.reason);
@@ -461,6 +467,10 @@ export function registerIpcHandlers(
 		const sourceSelectorWin = getSourceSelectorWindow();
 		if (sourceSelectorWin) {
 			sourceSelectorWin.close();
+		}
+		const mainWin = getMainWindow();
+		if (mainWin && !mainWin.isDestroyed()) {
+			mainWin.webContents.send("start-recording");
 		}
 		return selectedSource;
 	});
@@ -526,13 +536,13 @@ export function registerIpcHandlers(
 		}
 	});
 
-	ipcMain.handle("open-source-selector", () => {
+	ipcMain.handle("open-source-selector", (_, defaultTab?: string) => {
 		const sourceSelectorWin = getSourceSelectorWindow();
 		if (sourceSelectorWin) {
 			sourceSelectorWin.focus();
 			return;
 		}
-		createSourceSelectorWindow();
+		createSourceSelectorWindow(defaultTab);
 	});
 
 	ipcMain.handle("switch-to-editor", () => {
@@ -1056,4 +1066,165 @@ export function registerIpcHandlers(
 			return { success: false, error: String(error) };
 		}
 	});
+
+	ipcMain.handle("open-display-overlays", async () => {
+		try {
+			const displayNames: Record<string, string> = {};
+			try {
+				const sources = await desktopCapturer.getSources({
+					types: ["screen"],
+					thumbnailSize: { width: 1, height: 1 },
+				});
+				for (const s of sources) {
+					displayNames[s.display_id] = s.name;
+				}
+			} catch (capturerError) {
+				console.warn(
+					"desktopCapturer.getSources failed, falling back to generic names:",
+					capturerError,
+				);
+				const displays = screen.getAllDisplays();
+				const primaryId = screen.getPrimaryDisplay().id.toString();
+				for (const d of displays) {
+					const idStr = d.id.toString();
+					if (idStr === primaryId) {
+						displayNames[idStr] = "Built-in Retina Display";
+					} else {
+						displayNames[idStr] = `External Display (${d.bounds.width}x${d.bounds.height})`;
+					}
+				}
+			}
+			createDisplayOverlayWindows(displayNames);
+			return { success: true };
+		} catch (error) {
+			console.error("Failed to open display overlays:", error);
+			return { success: false, error: String(error) };
+		}
+	});
+
+	ipcMain.handle("close-display-overlays", () => {
+		closeDisplayOverlayWindows();
+		return { success: true };
+	});
+
+	ipcMain.handle("select-display-and-start", async (_, displayId: string) => {
+		try {
+			closeDisplayOverlayWindows();
+
+			try {
+				const sources = await desktopCapturer.getSources({
+					types: ["screen"],
+					thumbnailSize: { width: 1, height: 1 },
+				});
+				const matched = sources.find((s) => s.display_id === displayId);
+				if (matched) {
+					selectedSource = {
+						id: matched.id,
+						name: matched.name,
+						display_id: matched.display_id,
+						thumbnail: null,
+						appIcon: null,
+					};
+				} else {
+					selectedSource = {
+						id: `screen:${displayId}`,
+						name: "Screen",
+						display_id: displayId,
+						thumbnail: null,
+						appIcon: null,
+					};
+				}
+			} catch (capturerError) {
+				console.warn(
+					"desktopCapturer.getSources failed in select, using manual id:",
+					capturerError,
+				);
+				selectedSource = {
+					id: `screen:${displayId}`,
+					name: "Screen",
+					display_id: displayId,
+					thumbnail: null,
+					appIcon: null,
+				};
+			}
+
+			const mainWin = getMainWindow();
+			if (mainWin && !mainWin.isDestroyed()) {
+				mainWin.webContents.send("start-recording");
+			}
+
+			return { success: true };
+		} catch (error) {
+			console.error("Failed to select display and start:", error);
+			// Even if everything fails, try triggering HUD recording
+			selectedSource = {
+				id: `screen:${displayId}`,
+				name: "Screen",
+				display_id: displayId,
+				thumbnail: null,
+				appIcon: null,
+			};
+			const mainWin = getMainWindow();
+			if (mainWin && !mainWin.isDestroyed()) {
+				mainWin.webContents.send("start-recording");
+			}
+			return { success: true };
+		}
+	});
+
+	ipcMain.handle(
+		"confirm-area-selection",
+		async (_event, selection: { x: number; y: number; width: number; height: number }) => {
+			closeAreaSelectorWindow();
+			const primaryDisplay = screen.getPrimaryDisplay();
+			try {
+				const sources = await desktopCapturer.getSources({
+					types: ["screen"],
+					thumbnailSize: { width: 1, height: 1 },
+				});
+				const matched = sources.find((s) => s.display_id === primaryDisplay.id.toString());
+				if (matched) {
+					selectedSource = {
+						id: matched.id,
+						name: matched.name,
+						display_id: matched.display_id,
+						thumbnail: null,
+						appIcon: null,
+					};
+				} else {
+					selectedSource = {
+						id: `screen:${primaryDisplay.id}`,
+						name: "Screen",
+						display_id: primaryDisplay.id.toString(),
+						thumbnail: null,
+						appIcon: null,
+					};
+				}
+			} catch (_e) {
+				selectedSource = {
+					id: `screen:${primaryDisplay.id}`,
+					name: "Screen",
+					display_id: primaryDisplay.id.toString(),
+					thumbnail: null,
+					appIcon: null,
+				};
+			}
+
+			// Broadcast selected area to all windows
+			const allWins = BrowserWindow.getAllWindows();
+			for (const w of allWins) {
+				if (!w.isDestroyed()) {
+					w.webContents.send("area-selection-confirmed", selection);
+				}
+			}
+
+			// Send start-recording to main window
+			const mainWin = getMainWindow();
+			if (mainWin && !mainWin.isDestroyed()) {
+				mainWin.webContents.send("start-recording");
+			}
+
+			return { success: true };
+		},
+	);
 }

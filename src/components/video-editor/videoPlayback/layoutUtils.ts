@@ -7,7 +7,12 @@ import {
 	type WebcamLayoutPreset,
 	type WebcamSizePreset,
 } from "@/lib/compositeLayout";
-import { resolveScreenPadding, type CropRegion, type ScreenLayoutPreset, type WebcamMaskShape } from "../types";
+import {
+	type CropRegion,
+	resolveScreenPadding,
+	type ScreenLayoutPreset,
+	type WebcamMaskShape,
+} from "../types";
 
 interface LayoutParams {
 	container: HTMLDivElement;
@@ -99,12 +104,12 @@ export function layoutVideoContent(params: LayoutParams): LayoutResult | null {
 		webcamLayoutPreset === "vertical-stack" || shouldFillCanvas
 			? 0
 			: Math.max(
-				0,
-				resolvedPadding +
-				(hasWebcamOverlay && webcamLayoutPreset === "picture-in-picture"
-					? WEBCAM_AUTO_ZOOM_OUT_PADDING_BOOST
-					: 0),
-			);
+					0,
+					resolvedPadding +
+						(hasWebcamOverlay && webcamLayoutPreset === "picture-in-picture"
+							? WEBCAM_AUTO_ZOOM_OUT_PADDING_BOOST
+							: 0),
+				);
 	const maxDisplayWidth = Math.max(1, width - effectivePadding * 2);
 	const maxDisplayHeight = Math.max(1, height - effectivePadding * 2);
 
@@ -123,9 +128,7 @@ export function layoutVideoContent(params: LayoutParams): LayoutResult | null {
 		return null;
 	}
 
-	const screenRect = shouldFillCanvas
-		? { x: 0, y: 0, width, height }
-		: compositeLayout.screenRect;
+	const screenRect = shouldFillCanvas ? { x: 0, y: 0, width, height } : compositeLayout.screenRect;
 	const screenCover = shouldFillCanvas || Boolean(compositeLayout.screenCover);
 
 	// Cover mode: scale to fill the rect (may crop), otherwise fit-to-width

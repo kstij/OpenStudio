@@ -1,10 +1,9 @@
 import { useCallback, useRef, useState } from "react";
-import { DEFAULT_SCREEN_LAYOUT_PRESET } from "@/components/video-editor/types";
 import type {
 	AnnotationRegion,
 	CropRegion,
-	SpeedRegion,
 	ScreenLayoutPreset,
+	SpeedRegion,
 	TrimRegion,
 	WebcamLayoutPreset,
 	WebcamMaskShape,
@@ -15,6 +14,7 @@ import type {
 import {
 	DEFAULT_CORNER_RADIUS,
 	DEFAULT_CROP_REGION,
+	DEFAULT_SCREEN_LAYOUT_PRESET,
 	DEFAULT_WEBCAM_BACKGROUND_BLUR,
 	DEFAULT_WEBCAM_LAYOUT_PRESET,
 	DEFAULT_WEBCAM_MASK_SHAPE,

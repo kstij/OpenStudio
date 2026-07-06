@@ -129,7 +129,7 @@ export function ShortcutsConfigDialog() {
 			<DialogContent className="bg-[#09090b] border-white/10 text-white max-w-[420px]">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2 text-sm">
-						<Keyboard className="w-4 h-4 text-[#5078EA]" />
+						<Keyboard className="w-4 h-4 text-white" />
 						{t("title")}
 					</DialogTitle>
 				</DialogHeader>
@@ -155,10 +155,10 @@ export function ShortcutsConfigDialog() {
 										className={[
 											"px-2 py-1 rounded text-xs font-mono border transition-all min-w-[90px] text-center select-none",
 											isCapturing
-												? "bg-[#5078EA]/20 border-[#5078EA] text-[#5078EA] animate-pulse"
+												? "bg-white/20 border-white text-white animate-pulse"
 												: hasConflict
 													? "bg-amber-500/10 border-amber-500/50 text-amber-400"
-													: "bg-white/5 border-white/10 text-slate-200 hover:border-[#5078EA]/50 hover:text-[#5078EA] cursor-pointer",
+													: "bg-white/5 border-white/10 text-slate-200 hover:border-white/50 hover:text-white cursor-pointer",
 										].join(" ")}
 									>
 										{isCapturing ? t("pressKey") : formatBinding(draft[action], isMac)}
@@ -230,7 +230,7 @@ export function ShortcutsConfigDialog() {
 						</Button>
 						<Button
 							size="sm"
-							className="bg-[#5078EA] hover:bg-[#5078EA] text-white"
+							className="bg-white hover:bg-zinc-200 text-black font-semibold border-none"
 							onClick={handleSave}
 						>
 							{tc("actions.save")}

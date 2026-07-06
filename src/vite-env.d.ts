@@ -21,7 +21,7 @@ interface Window {
 		switchToEditor: () => Promise<void>;
 		switchToHud: () => Promise<void>;
 		startNewRecording: () => Promise<{ success: boolean; error?: string }>;
-		openSourceSelector: () => Promise<void>;
+		openSourceSelector: (defaultTab?: string) => Promise<void>;
 		selectSource: (source: ProcessedDesktopSource) => Promise<ProcessedDesktopSource | null>;
 		getSelectedSource: () => Promise<ProcessedDesktopSource | null>;
 		requestCameraAccess: () => Promise<{
@@ -129,6 +129,10 @@ interface Window {
 		setHasUnsavedChanges: (hasChanges: boolean) => void;
 		onRequestSaveBeforeClose: (callback: () => Promise<boolean> | boolean) => () => void;
 		setLocale: (locale: string) => Promise<void>;
+		openDisplayOverlays: () => Promise<void>;
+		selectDisplayAndStart: (displayId: string) => Promise<void>;
+		closeDisplayOverlays: () => Promise<void>;
+		onStartRecording: (callback: () => void) => () => void;
 	};
 }
 

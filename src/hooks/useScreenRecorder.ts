@@ -101,9 +101,7 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 	const [systemAudioEnabled, setSystemAudioEnabled] = useState(false);
 	const [webcamEnabled, setWebcamEnabledState] = useState(false);
 	const initialPrefs = loadUserPreferences();
-	const [webcamPreviewMirrored, setWebcamPreviewMirrored] = useState(
-		initialPrefs.webcamMirrored,
-	);
+	const [webcamPreviewMirrored, setWebcamPreviewMirrored] = useState(initialPrefs.webcamMirrored);
 	const [webcamPreviewShape, setWebcamPreviewShape] = useState<WebcamPreviewShape>(
 		initialPrefs.webcamShape,
 	);
@@ -261,9 +259,9 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 						},
 						webcam: fixedWebcamBlob
 							? {
-								videoData: await fixedWebcamBlob.arrayBuffer(),
-								fileName: webcamFileName,
-							}
+									videoData: await fixedWebcamBlob.arrayBuffer(),
+									fileName: webcamFileName,
+								}
 							: undefined,
 						createdAt: activeRecordingId,
 					});
@@ -403,14 +401,14 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 				IDEAL_CAPTURE_WIDTH,
 				Math.floor(
 					((window.screen?.width ?? IDEAL_CAPTURE_WIDTH) * (window.devicePixelRatio || 1)) /
-					CODEC_ALIGNMENT,
+						CODEC_ALIGNMENT,
 				) * CODEC_ALIGNMENT,
 			);
 			const nativeCaptureHeight = Math.max(
 				IDEAL_CAPTURE_HEIGHT,
 				Math.floor(
 					((window.screen?.height ?? IDEAL_CAPTURE_HEIGHT) * (window.devicePixelRatio || 1)) /
-					CODEC_ALIGNMENT,
+						CODEC_ALIGNMENT,
 				) * CODEC_ALIGNMENT,
 			);
 
@@ -456,16 +454,16 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 					microphoneStream.current = await navigator.mediaDevices.getUserMedia({
 						audio: microphoneDeviceId
 							? {
-								deviceId: { exact: microphoneDeviceId },
-								echoCancellation: true,
-								noiseSuppression: true,
-								autoGainControl: true,
-							}
+									deviceId: { exact: microphoneDeviceId },
+									echoCancellation: true,
+									noiseSuppression: true,
+									autoGainControl: true,
+								}
 							: {
-								echoCancellation: true,
-								noiseSuppression: true,
-								autoGainControl: true,
-							},
+									echoCancellation: true,
+									noiseSuppression: true,
+									autoGainControl: true,
+								},
 						video: false,
 					});
 				} catch (audioError) {
@@ -481,16 +479,16 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 						audio: false,
 						video: webcamDeviceId
 							? {
-								deviceId: { exact: webcamDeviceId },
-								width: { ideal: WEBCAM_TARGET_WIDTH },
-								height: { ideal: WEBCAM_TARGET_HEIGHT },
-								frameRate: { ideal: WEBCAM_TARGET_FRAME_RATE, max: WEBCAM_TARGET_FRAME_RATE },
-							}
+									deviceId: { exact: webcamDeviceId },
+									width: { ideal: WEBCAM_TARGET_WIDTH },
+									height: { ideal: WEBCAM_TARGET_HEIGHT },
+									frameRate: { ideal: WEBCAM_TARGET_FRAME_RATE, max: WEBCAM_TARGET_FRAME_RATE },
+								}
 							: {
-								width: { ideal: WEBCAM_TARGET_WIDTH },
-								height: { ideal: WEBCAM_TARGET_HEIGHT },
-								frameRate: { ideal: WEBCAM_TARGET_FRAME_RATE, max: WEBCAM_TARGET_FRAME_RATE },
-							},
+									width: { ideal: WEBCAM_TARGET_WIDTH },
+									height: { ideal: WEBCAM_TARGET_HEIGHT },
+									frameRate: { ideal: WEBCAM_TARGET_FRAME_RATE, max: WEBCAM_TARGET_FRAME_RATE },
+								},
 					});
 				} catch (cameraError) {
 					console.warn("Failed to get webcam access:", cameraError);
@@ -616,8 +614,16 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 		} catch (error) {
 			console.error("Failed to start recording:", error);
 			const errorMsg = error instanceof Error ? error.message : "Failed to start recording";
-			if (errorMsg.includes("Permission denied") || errorMsg.includes("NotAllowedError")) {
-				toast.error(t("recording.permissionDenied"));
+			if (
+				errorMsg.includes("Permission denied") ||
+				errorMsg.includes("NotAllowedError") ||
+				errorMsg.includes("InvalidStateError") ||
+				errorMsg.includes("Invalid state") ||
+				errorMsg.includes("invalid state")
+			) {
+				toast.error(
+					"Screen Recording permission is required. Please enable it in macOS System Settings > Privacy & Security > Screen & System Audio Recording.",
+				);
 			} else {
 				toast.error(errorMsg);
 			}
@@ -772,13 +778,7 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 			.catch((error) => {
 				console.warn("Failed to update webcam preview state:", error);
 			});
-	}, [
-		webcamEnabled,
-		webcamDeviceId,
-		webcamPreviewMirrored,
-		webcamPreviewShape,
-		webcamPreviewBlur,
-	]);
+	}, [webcamEnabled, webcamDeviceId, webcamPreviewMirrored, webcamPreviewShape, webcamPreviewBlur]);
 
 	return {
 		recording,

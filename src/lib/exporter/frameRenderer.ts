@@ -11,14 +11,14 @@ import { MotionBlurFilter } from "pixi-filters/motion-blur";
 import type {
 	AnnotationRegion,
 	CropRegion,
-	SpeedRegion,
 	ScreenLayoutPreset,
+	SpeedRegion,
 	WebcamLayoutPreset,
 	WebcamSizePreset,
 	ZoomDepth,
 	ZoomRegion,
 } from "@/components/video-editor/types";
-import { ZOOM_DEPTH_SCALES } from "@/components/video-editor/types";
+import { resolveScreenPadding, ZOOM_DEPTH_SCALES } from "@/components/video-editor/types";
 import {
 	AUTO_FOLLOW_RAMP_DISTANCE,
 	AUTO_FOLLOW_SMOOTHING_FACTOR,
@@ -46,7 +46,6 @@ import {
 	type Size,
 	type StyledRenderRect,
 } from "@/lib/compositeLayout";
-import { resolveScreenPadding } from "@/components/video-editor/types";
 import { drawCanvasClipPath } from "@/lib/webcamMaskShapes";
 import { renderAnnotations } from "./annotationRenderer";
 import {
@@ -321,30 +320,30 @@ export class FrameRenderer {
 					const gradient =
 						parsedGradient.type === "linear"
 							? (() => {
-								const points = getLinearGradientPoints(
-									resolveLinearGradientAngle(parsedGradient.descriptor),
-									this.config.width,
-									this.config.height,
-								);
+									const points = getLinearGradientPoints(
+										resolveLinearGradientAngle(parsedGradient.descriptor),
+										this.config.width,
+										this.config.height,
+									);
 
-								return bgCtx.createLinearGradient(points.x0, points.y0, points.x1, points.y1);
-							})()
+									return bgCtx.createLinearGradient(points.x0, points.y0, points.x1, points.y1);
+								})()
 							: (() => {
-								const shape = getRadialGradientShape(
-									parsedGradient.descriptor,
-									this.config.width,
-									this.config.height,
-								);
+									const shape = getRadialGradientShape(
+										parsedGradient.descriptor,
+										this.config.width,
+										this.config.height,
+									);
 
-								return bgCtx.createRadialGradient(
-									shape.cx,
-									shape.cy,
-									0,
-									shape.cx,
-									shape.cy,
-									shape.radius,
-								);
-							})();
+									return bgCtx.createRadialGradient(
+										shape.cx,
+										shape.cy,
+										0,
+										shape.cx,
+										shape.cy,
+										shape.radius,
+									);
+								})();
 
 					parsedGradient.stops.forEach((stop) => {
 						gradient.addColorStop(stop.offset, stop.color);
@@ -488,12 +487,12 @@ export class FrameRenderer {
 			this.config.webcamLayoutPreset === "vertical-stack" || shouldFillCanvas
 				? 0
 				: Math.max(
-					0,
-					resolvedPadding +
-					(webcamFrame && this.config.webcamLayoutPreset === "picture-in-picture"
-						? WEBCAM_AUTO_ZOOM_OUT_PADDING_BOOST
-						: 0),
-				);
+						0,
+						resolvedPadding +
+							(webcamFrame && this.config.webcamLayoutPreset === "picture-in-picture"
+								? WEBCAM_AUTO_ZOOM_OUT_PADDING_BOOST
+								: 0),
+					);
 		const viewportWidth = Math.max(1, width - effectivePadding * 2);
 		const viewportHeight = Math.max(1, height - effectivePadding * 2);
 		const compositeLayout = computeCompositeLayout({
